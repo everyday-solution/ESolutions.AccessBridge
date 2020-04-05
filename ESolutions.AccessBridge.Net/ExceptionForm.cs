@@ -20,25 +20,29 @@ namespace ESolutions.AccessBridge.DotNet
 
 		//Methods
 		#region Show
+		/// <summary>
+		/// Hides the inherited Show method.
+		/// </summary>
 		private new void Show()
 		{
 		}
 		#endregion
 
 		#region ShowDialog
-		public void ShowDialog(Exception ex)
+		public static void ShowDialog(Exception ex)
 		{
-			this.messageLabel.Text = ex.Message;
-			this.AddException(ex);
-			this.exceptionListView.Items[0].Selected = true;
-			base.ShowDialog();
+			var form = new ExceptionForm();
+			form.messageLabel.Text = ex.Message;
+			form.AddException(ex);
+			form.exceptionListView.Items[0].Selected = true;
+			form.ShowDialog();
 		}
 		#endregion
 
 		#region AddException
 		private void AddException(Exception ex)
 		{
-			ListViewItem newListViewItem = new ListViewItem(ex.Message);
+			var newListViewItem = new ListViewItem(ex.Message);
 			newListViewItem.Tag = ex;
 			this.exceptionListView.Items.Add(newListViewItem);
 

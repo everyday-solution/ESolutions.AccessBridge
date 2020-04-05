@@ -108,13 +108,17 @@ namespace ESolutions.AccessBridge.Wrapper
 		{
 			try
 			{
-				this.applicationSettings = new ApplicationSettings(dataPath,
-					 loggedUser,
-					 loggedUserName,
-					 dBHost,
-					 dBName,
-					 dBUser,
-					 dBPassword);
+				var microkernelConfig = new FileInfo(Path.Combine(dataPath, "Microkernel.Mappings.xml"));
+				Microkernel.Initialize(microkernelConfig);
+
+				this.applicationSettings = new ApplicationSettings(
+					dataPath,
+					loggedUser,
+					loggedUserName,
+					dBHost,
+					dBName,
+					dBUser,
+					dBPassword);
 			}
 			catch (Exception ex)
 			{
@@ -130,20 +134,16 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <param name="namespaceName">Name of the namespace.</param>
 		/// <param name="formName">Name of the form.</param>
 		/// <returns>
-		/// Window-Handle des geladenen Forms
+		/// Window-Handle of the loaded form.
 		/// </returns>
 		[DispId(2)]
-		public Int32 Load(
-			String assemblyName,
-			String formTypeName)
+		public Int32 Load(String multiKey)
 		{
 			Int32 hwnd = 0;
 
 			try
 			{
-				IForm form = this.GetFormObject(
-					assemblyName,
-					formTypeName);
+				var form = this.GetFormObject(multiKey);
 
 				form.LeaveForm += this.LeaveFormHandler;
 				form.LoadAnotherForm += this.LoadAnotherFormHandler;
@@ -154,7 +154,7 @@ namespace ESolutions.AccessBridge.Wrapper
 			}
 			catch (Exception ex)
 			{
-				ESolutions.AccessBridge.DotNet.Tracer.TraceException(ex);
+				Tracer.TraceException(ex);
 			}
 
 			return hwnd;
@@ -165,25 +165,21 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <summary>
 		/// Entlädt das angegebenen Form
 		/// </summary>
-		/// <param methodName="formName">Name des Forms, das entladen werden soll</param>
+		/// <param name="mik">The mik.</param>
 		[DispId(3)]
-		public void Unload(
-			String assemblyName,
-			String formTypeName)
+		public void Unload(String multiKey)
 		{
 			try
 			{
-				IForm form = this.GetFormObject(
-					assemblyName,
-					formTypeName);
+				var form = this.GetFormObject(multiKey);
 
 				form.Close();
 
-				loadedForms.Remove(form.GetType().FullName);
+				loadedForms.Remove(multiKey);
 			}
 			catch (Exception ex)
 			{
-				ESolutions.AccessBridge.DotNet.Tracer.TraceException(ex);
+				Tracer.TraceException(ex);
 			}
 		}
 		#endregion
@@ -200,8 +196,7 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <param methodName="left">y-Koordinate</param>        
 		[DispId(4)]
 		public void SetAppearance(
-			String assemblyName,
-			String formTypeName,
+			String multiKey,
 			Int32 height,
 			Int32 width,
 			Int32 top,
@@ -209,9 +204,7 @@ namespace ESolutions.AccessBridge.Wrapper
 		{
 			try
 			{
-				IForm form = this.GetFormObject(
-					assemblyName,
-					formTypeName);
+				var form = this.GetFormObject(multiKey);
 
 				form.Size = new System.Drawing.Size(
 					width,
@@ -240,8 +233,7 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <param name="CanPrint">if set to <c>true</c> [can print].</param>
 		[DispId(5)]
 		public void PutSettings(
-			String assemblyName,
-			String formTypeName,
+			String multiKey,
 			String Parameter1,
 			String Parameter2,
 			ref Boolean CanSave,
@@ -249,9 +241,7 @@ namespace ESolutions.AccessBridge.Wrapper
 		{
 			try
 			{
-				IForm form = this.GetFormObject(
-					assemblyName,
-					formTypeName);
+				var form = this.GetFormObject(multiKey);
 
 				form.PutSettings(
 					Parameter1,
@@ -279,22 +269,18 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <param methodName="Icon">Icon</param>
 		[DispId(6)]
 		public void MasterIdChanged(
-			String assemblyName,
-			String formTypeName,
+			String multiKey,
 			Int32 MasterId)
 		{
 			try
 			{
-				IForm form = this.GetFormObject(
-					assemblyName,
-					formTypeName);
-
-				MasterIdChangedEventArgs e = new MasterIdChangedEventArgs(MasterId);
+				var form = this.GetFormObject(multiKey);
+				var e = new MasterIdChangedEventArgs(MasterId);
 				form.MasterIdChanged(e);
 			}
 			catch (Exception ex)
 			{
-				ESolutions.AccessBridge.DotNet.Tracer.TraceException(ex);
+				Tracer.TraceException(ex);
 			}
 		}
 		#endregion
@@ -317,7 +303,7 @@ namespace ESolutions.AccessBridge.Wrapper
 			}
 			catch (Exception ex)
 			{
-				ESolutions.AccessBridge.DotNet.Tracer.TraceException(ex);
+				Tracer.TraceException(ex);
 			}
 		}
 		#endregion
@@ -340,66 +326,20 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <param name="assemblyName">Name of the assembly.</param>
 		/// <param name="formTypeName">Name of the form.</param>
 		/// <returns></returns>
-		private IForm GetFormObject(
-			String assemblyName,
-			String formTypeName)
+		private IForm GetFormObject(String multiKey)
 		{
 			IForm result = null;
 
 			try
 			{
-				Assembly assembly = this.GetAssembly(assemblyName);
-
-				if (loadedForms.ContainsKey(formTypeName))
+				if (FormWrapper.loadedForms.ContainsKey(multiKey))
 				{
-					result = loadedForms[formTypeName];
+					result = FormWrapper.loadedForms[multiKey];
 				}
 				else
 				{
-					Module[] m = assembly.GetModules();
-
-					Type myType = assembly.GetType(formTypeName, false, true);
-					assembly.GetTypes();
-					result = (IForm)Activator.CreateInstance(myType);
-					loadedForms.Add(formTypeName, result);
-				}
-			}
-			catch (Exception ex)
-			{
-				ESolutions.AccessBridge.DotNet.Tracer.TraceException(ex);
-			}
-
-			return result;
-		}
-		#endregion
-
-		#region GetAssembly
-		/// <summary>
-		/// Gets the assembly.
-		/// </summary>
-		/// <param name="assemblyName">Name of the assembly.</param>
-		/// <returns></returns>
-		private Assembly GetAssembly(String assemblyName)
-		{
-			Assembly result = null;
-
-			try
-			{
-				//Get Assembly
-				String assemblyFullName = InstancesCollection.BuildAssemblyFullName(
-					assemblyName,
-					this.applicationSettings.DataPath);
-
-				if (loadedAssemblies.ContainsKey(assemblyFullName) == false)
-				{
-					result = Assembly.LoadFrom(assemblyFullName);
-					loadedAssemblies.Add(
-						assemblyFullName,
-						result);
-				}
-				else
-				{
-					result = loadedAssemblies[assemblyFullName];
+					result = Microkernel.CreateInstance<IForm>(multiKey);
+					FormWrapper.loadedForms.Add(multiKey, result);
 				}
 			}
 			catch (Exception ex)

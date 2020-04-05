@@ -18,18 +18,14 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <param name="assemblyName">Name of the assembly.</param>
 		/// <param name="formName">Name of the form.</param>
 		/// <returns></returns>
-		Int32 Load(
-			String assemblyName,
-			String formName);
+		Int32 Load(String multiKey);
 
 		/// <summary>
 		/// Unloads the specified form.
 		/// </summary>
 		/// <param name="assemblyName">Name of the assembly.</param>
 		/// <param name="formName">Name of the form.</param>
-		void Unload(
-			String assemblyName,
-			String formName);
+		void Unload(String multiKey);
 
 		/// <summary>
 		/// Initializes the specified IForm with the global settings.
@@ -53,15 +49,13 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <summary>
 		/// Sets the appearance of the IForm
 		/// </summary>
-		/// <param name="assemblyName">Name of the assembly.</param>
-		/// <param name="formName">Name of the form.</param>
+		/// <param name="multiKey">The multi key.</param>
 		/// <param name="height">The height.</param>
 		/// <param name="width">The width.</param>
 		/// <param name="top">The top.</param>
 		/// <param name="left">The left.</param>
 		void SetAppearance(
-			String assemblyName,
-			String formName,
+			String multiKey,
 			Int32 height,
 			Int32 width,
 			Int32 top,
@@ -70,15 +64,13 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <summary>
 		/// Puts the IForm specific settings
 		/// </summary>
-		/// <param name="assemblyName">Name of the assembly.</param>
-		/// <param name="formName">Name of the form.</param>
+		/// <param name="multiKey">The multi key.</param>
 		/// <param name="Parameter1">The parameter1.</param>
 		/// <param name="Parameter2">The parameter2.</param>
 		/// <param name="CanSave">if set to <c>true</c> [can save].</param>
 		/// <param name="CanPrint">if set to <c>true</c> [can print].</param>
 		void PutSettings(
-			String assemblyName,
-			String formName,
+			String multiKey,
 			String Parameter1,
 			String Parameter2,
 			ref Boolean CanSave,
@@ -87,12 +79,10 @@ namespace ESolutions.AccessBridge.Wrapper
 		/// <summary>
 		/// The master id of parent data record in Access changed.
 		/// </summary>
-		/// <param name="namespaceName">Name of the namespace.</param>
-		/// <param name="formName">Name of the form.</param>
+		/// <param name="multiKey">The multi key.</param>
 		/// <param name="MasterId">The master identifier.</param>
 		void MasterIdChanged(
-			String namespaceName,
-			String formName,
+			String multiKey,
 			Int32 MasterId);
 	}
 }

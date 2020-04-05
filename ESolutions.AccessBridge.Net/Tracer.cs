@@ -20,8 +20,7 @@ namespace ESolutions.AccessBridge.DotNet
 			var exceptionMessage = $"{ex.Message} - {ex.StackTrace}";
 			Tracer.TraceMessage(exceptionMessage);
 
-			ExceptionForm form = new ExceptionForm();
-			form.ShowDialog(ex);
+			ExceptionForm.ShowDialog(ex);
 		}
 		#endregion
 
