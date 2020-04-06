@@ -108,6 +108,11 @@ namespace ESolutions.AccessBridge.Wrapper
 		{
 			try
 			{
+				if (String.IsNullOrWhiteSpace(dataPath))
+				{
+					dataPath = Directory.GetCurrentDirectory();
+				}
+
 				var microkernelConfig = new FileInfo(Path.Combine(dataPath, "Microkernel.Mappings.xml"));
 				Microkernel.Initialize(microkernelConfig);
 
