@@ -61,13 +61,13 @@ namespace ESolutions.AccessBridge.WinForms
 			{
 				this.currentFormKey = (this.menuListBox.SelectedItem as MenuItem).Key;
 				var subFormHandle = this.wrapper.Load((this.menuListBox.SelectedItem as MenuItem).Key);
+				SetParent((IntPtr)subFormHandle, this.formPanel.Handle);
 				this.wrapper.SetAppearance(
 					this.currentFormKey, 
 					this.formPanel.Height, 
 					this.formPanel.Width, 
 					0,
 					0);
-				SetParent((IntPtr)subFormHandle, this.formPanel.Handle);
 				this.formTitle.Text = (this.menuListBox.SelectedItem as MenuItem).Text;
 			}
 			catch (Exception ex)

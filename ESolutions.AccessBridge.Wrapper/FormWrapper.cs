@@ -150,12 +150,14 @@ namespace ESolutions.AccessBridge.Wrapper
 			{
 				var form = this.GetFormObject(multiKey);
 
-				form.LeaveForm += this.LeaveFormHandler;
-				form.LoadAnotherForm += this.LoadAnotherFormHandler;
-				form.Initialize(this.applicationSettings);
-				form.Show();
-
-				hwnd = (Int32)form.Handle;
+				if (form != null)
+				{
+					form.LeaveForm += this.LeaveFormHandler;
+					form.LoadAnotherForm += this.LoadAnotherFormHandler;
+					form.Initialize(this.applicationSettings);
+					form.Show();
+					hwnd = (Int32)form.Handle;
+				}
 			}
 			catch (Exception ex)
 			{
@@ -178,9 +180,11 @@ namespace ESolutions.AccessBridge.Wrapper
 			{
 				var form = this.GetFormObject(multiKey);
 
-				form.Close();
-
-				loadedForms.Remove(multiKey);
+				if (form != null)
+				{
+					form.Close();
+					loadedForms.Remove(multiKey);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -211,13 +215,16 @@ namespace ESolutions.AccessBridge.Wrapper
 			{
 				var form = this.GetFormObject(multiKey);
 
-				form.Size = new System.Drawing.Size(
-					width,
-					height);
+				if (form != null)
+				{
+					form.Size = new System.Drawing.Size(
+						width,
+						height);
 
-				form.Location = new System.Drawing.Point(
-					left,
-					top);
+					form.Location = new System.Drawing.Point(
+						left,
+						top);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -280,8 +287,11 @@ namespace ESolutions.AccessBridge.Wrapper
 			try
 			{
 				var form = this.GetFormObject(multiKey);
-				var e = new MasterIdChangedEventArgs(MasterId);
-				form.MasterIdChanged(e);
+				if (form != null)
+				{
+					var e = new MasterIdChangedEventArgs(MasterId);
+					form.MasterIdChanged(e);
+				}
 			}
 			catch (Exception ex)
 			{
@@ -337,14 +347,17 @@ namespace ESolutions.AccessBridge.Wrapper
 
 			try
 			{
-				if (FormWrapper.loadedForms.ContainsKey(multiKey))
+				if (!String.IsNullOrWhiteSpace(multiKey))
 				{
-					result = FormWrapper.loadedForms[multiKey];
-				}
-				else
-				{
-					result = Microkernel.CreateInstance<IForm>(multiKey);
-					FormWrapper.loadedForms.Add(multiKey, result);
+					if (FormWrapper.loadedForms.ContainsKey(multiKey))
+					{
+						result = FormWrapper.loadedForms[multiKey];
+					}
+					else
+					{
+						result = Microkernel.CreateInstance<IForm>(multiKey);
+						FormWrapper.loadedForms.Add(multiKey, result);
+					}
 				}
 			}
 			catch (Exception ex)

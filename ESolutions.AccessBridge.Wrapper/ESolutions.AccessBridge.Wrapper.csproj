@@ -52,9 +52,6 @@
     <Reference Include="EPPlus, Version=5.0.4.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.5.0.4\lib\net45\EPPlus.dll</HintPath>
     </Reference>
-    <Reference Include="ESolutions, Version=1.9.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESolutions.1.9.2\lib\net462\ESolutions.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -92,6 +89,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ESolutions\ESolutions\ESolutions.csproj">
+      <Project>{679de7a0-6834-41a4-aefe-0a317f5bf614}</Project>
+      <Name>ESolutions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESolutions.AccessBridge.Net\ESolutions.AccessBridge.DotNet.csproj">
       <Project>{1A44FAB8-8CE3-4916-9AA7-AD34D821AD54}</Project>
       <Name>ESolutions.AccessBridge.DotNet</Name>

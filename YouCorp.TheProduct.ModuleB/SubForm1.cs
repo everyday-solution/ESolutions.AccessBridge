@@ -28,6 +28,7 @@ namespace YouCorp.TheProduct.ModuleB
 
 		public void MasterIdChanged(MasterIdChangedEventArgs e)
 		{
+			this.masterIdTextBox.Text = e.MasterId.ToString();
 		}
 
 		public void PutSettings(String Parameter1, String Parameter2, ref Boolean canSave, ref Boolean canPrint)
